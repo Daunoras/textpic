@@ -42,7 +42,7 @@ def shades(pav, n):
         print(eil)
     print(n, m)
 
-def blocks(pav, n):
+def blocks(pav, n, rysk=127):
     pav = Image.open(pav)
     data = pav.getdata()
     ilgis = pav.width
@@ -64,53 +64,17 @@ def blocks(pav, n):
             ad = sector.crop((int(sector.width / 2), int(sector.height / 2), sector.width, sector.height,))
             rez_ad = numpy.average(ad.getdata())
 
-            if rez_vk < 128:
-                if rez_vd < 128:
-                    if rez_ak < 128:
-                        if rez_ad < 128:
-                            simb = "█"
-                        else:
-                            simb = "▛"
-                    else:
-                        if rez_ad < 128:
-                            simb = "▜"
-                        else:
-                            simb = "▀"
-                else:
-                    if rez_ak < 128:
-                        if rez_ad < 128:
-                            simb = "▙"
-                        else:
-                            simb = "▌"
-                    else:
-                        if rez_ad < 128:
-                            simb = "▚"
-                        else:
-                            simb = "▘"
-            else:
-                if rez_vd < 128:
-                    if rez_ak < 128:
-                        if rez_ad < 128:
-                            simb = "▟"
-                        else:
-                            simb = "▞"
-                    else:
-                        if rez_ad < 128:
-                            simb = "▐"
-                        else:
-                            simb = "▝"
-                else:
-                    if rez_ak < 128:
-                        if rez_ad < 128:
-                            simb = "▄"
-                        else:
-                            simb = "▖"
-                    else:
-                        if rez_ad < 128:
-                            simb = "▗"
-                        else:
-                            simb = "_"
-            eil += simb
+            simb = "█▛▜▀▙▌▚▘▟▞▐▝▄▖▗_"
+            simb_indx = 0
+            if rez_ad > rysk:
+                simb_indx += 1
+            if rez_ak > rysk:
+                simb_indx += 2
+            if rez_vd > rysk:
+                simb_indx += 4
+            if rez_vk > rysk:
+                simb_indx += 8
+            eil += simb[simb_indx]
 
         listas.append(eil)
     for eil in listas:
@@ -122,4 +86,4 @@ def kartu(img, n):
     shades(img, n)
     blocks(img, n)
 
-kartu('img_2.png', 100)
+kartu('img_1.png', 100)
