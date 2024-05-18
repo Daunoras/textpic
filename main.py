@@ -1,33 +1,43 @@
 from PIL import Image
 import numpy
-from tkinter import Tk, END, LEFT, Listbox, Label, Button, filedialog
+from tkinter import Tk, END, Label, Button, filedialog, Checkbutton, Entry, Text, DISABLED, NORMAL
 
 class Apsas:
     def __init__(self, langas):
         self.langas = langas
-        self.file_name = ""
-        # self.sarasas = Listbox(self.langas)
-        self.sarasas = Label(self.langas)
-
+        self.file_name = None
+        self.sarasas = Text(self.langas)
+        self.switch = False
         self.langas.geometry("1000x600")
-        button = Button(self.langas, text="Select a picture", command=self.on_button_click)
-        button.pack()
-        self.sarasas.config(width=900, font="courier", height=500)
-        self.sarasas.pack(side=LEFT)
 
+        open_button = Button(self.langas, text="Select a picture", command=self.open_file)
+        open_button.grid(row=0, column=0)
 
-    def grey(self, pav):
-        pav = Image.open(pav)
-        data = pav.getdata()
-        new_data = []
+        self.pavadinimas = Label(self.langas, text="No file selected")
+        self.pavadinimas.grid(row=0, column=1)
 
-        for pixel in data:
-            average = int(numpy.average(pixel))
-            new_pixel = (average, average, average)
-            new_data.append(new_pixel)
-        pav.putdata(new_data)
-        pav.save('nespalvotas.jpg')
+        check = Checkbutton(self.langas, text="Blocks", command=self.swichas)
+        check.grid(row=1, column=0)
 
+        kiek = Label(self.langas, text="Number of symbols in a row: ")
+        kiek.grid(row=2, column=0)
+
+        self.laukas = Entry(self.langas)
+        self.laukas.grid(row=2, column=1, sticky='w')
+
+        generate_button = Button(self.langas, text="Generate", command=self.generate)
+        generate_button.grid(row=3, column=0)
+
+        self.sarasas.config(width=900, font="courier", height=500, state=DISABLED)
+        self.sarasas.grid(row=4, column=0, columnspan=3)
+
+        self.langas.grid_columnconfigure(0, weight=0)
+        self.langas.grid_columnconfigure(1, weight=0)
+        self.langas.grid_columnconfigure(2, weight=1)
+        self.langas.grid_rowconfigure(4, weight=1)
+
+    def swichas(self):
+        self.switch = not self.switch
 
     def shades(self, pav, n):
         pav = Image.open(pav)
@@ -90,14 +100,27 @@ class Apsas:
             listas.append(eil)
         return listas
 
-    def on_button_click(self):
+    def open_file(self):
         self.file_name = filedialog.askopenfilename()
-        listas = self.shades(self.file_name, 200)
-        # self.sarasas.insert(END, *listas)
-        text = ""
-        for eil in listas:
-            text = text + eil + "\n"
-        self.sarasas.config(text=text)
+        self.pavadinimas.config(text=self.file_name)
+
+    def generate(self):
+        if self.file_name:
+            try:
+                n = int(self.laukas.get())
+            except ValueError:
+                n = 50
+            if self.switch == False:
+                listas = self.shades(self.file_name, n)
+            else:
+                listas = self.blocks(self.file_name, n)
+            text = ""
+            for eil in listas:
+                text = text + eil + "\n"
+            self.sarasas.config(state=NORMAL)
+            self.sarasas.delete(1.0, END)
+            self.sarasas.insert(END, text)
+            self.sarasas.config(state=DISABLED)
 
 
 langas = Tk()
