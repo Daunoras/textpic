@@ -70,7 +70,7 @@ class Apsas:
         aukstis = pav.height
 
         listas = []
-
+        rysk = numpy.average(pav.getdata())
         m = int((aukstis / ilgis) * n / 2.5)
         for j in range(0, m):
             eil = ""
