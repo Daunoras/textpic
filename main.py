@@ -46,22 +46,22 @@ class Apsas:
         listas = []
         m = int((aukstis / ilgis) * n / 2.5)
         for j in range(0, m):
-            eil = ""
+            row = []
             for i in range(0, n):
                 sector = pav.crop((int(i * ilgis / n), int(j * aukstis / m), int((i + 1) * ilgis / n), int((j + 1) * aukstis / m)))
                 rez = numpy.average(sector.getdata())
                 if rez < 50:
-                    eil += "█"
+                    row.append("█")
                 elif rez < 101 and rez >= 50:
-                    eil += "▓"
+                    row.append("▓")
                 elif rez < 151 and rez >= 100:
-                    eil += "▒"
+                    row.append("▒")
                 elif rez < 201 and rez >= 150:
-                    eil += "░"
+                    row.append("░")
                 else:
-                    eil += "_"
-
-            listas.append(eil)
+                    row.append("_")
+            row_str = "".join(row)
+            listas.append(row_str)
         return listas
 
     def blocks(self, pav, n, rysk=127):
@@ -73,7 +73,7 @@ class Apsas:
         rysk = numpy.average(pav.getdata())
         m = int((aukstis / ilgis) * n / 2.5)
         for j in range(0, m):
-            eil = ""
+            row = []
             for i in range(0, n):
                 sector = pav.crop((int(i * ilgis / n), int(j * aukstis / m), int((i + 1) * ilgis / n), int((j + 1) * aukstis / m)))
                 vk = sector.crop((0, 0, int(sector.width / 2), int(sector.height / 2),))
@@ -95,9 +95,9 @@ class Apsas:
                     simb_indx += 4
                 if rez_vk > rysk:
                     simb_indx += 8
-                eil += simb[simb_indx]
-
-            listas.append(eil)
+                row.append(simb[simb_indx])
+            row_str = "".join(row)
+            listas.append(row_str)
         return listas
 
     def open_file(self):
